@@ -20,12 +20,12 @@ For those last two uses, the index supplied cannot be greater than any index tha
 
 ### :Main
 
-I often want to debug a module or a library that doesn't do anything on its own. To do that, you need a separate program that runs tests on the module so that you can debug the module by starting a debug session on the tester program. This command is a solution to keep you from having to flip back and forth between the main file that you want to run, and the module that has all the bugs.
+I often want to debug a module or a library that doesn't do anything on its own. To do that, you need a separate program that runs tests on the module so that you can debug the module by starting a debug session on the tester. This command is a solution to keep you from having to flip back and forth between the main file that you want to launch, and the module that has all the bugs.
 
 This command modifies the "program" entry of your configuration. Did you know that that entry can be either a string or a function that returns a string? If you want to use the Main command, then you must set the "program" entry of your configuration to the latter. Here is an example function:
 
-program = function()
-  return vim.fn.expand('%p:')
+program = function()</br>
+  return vim.fn.expand('%:p')</br>
 end
 
 This works the same as setting program = '${file}', except that this way you can use Main. When you call Main, dap-hot-config.nvim will execute your function and store the output as the value for "program" in your configuration. Now that the value for "program" is a string, and not a format string, the same program will be run for debugging every time. Specifically, the buffer you had open when you called Main.
