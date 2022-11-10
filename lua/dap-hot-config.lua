@@ -2,7 +2,7 @@
 -- configurations associated with that filetype, just get the first one.
 -- If the configuration is missing, print a message and return nil.
 -- TODO: maybe this plugin could modify all configurations associated with the filetype, instead of just the first one.
-function GetConfig(filetype)
+local function get_config(filetype)
   -- Get the appropriate table of DAP configurations using the filetype of the current buffer, and make sure it's valid
   local config_table = require'dap'.configurations[filetype]
   if config_table == nil then
@@ -19,8 +19,8 @@ end
 
 -- Similar to GetConfig, but also checks that the configuration has a _default_program field, which is automatically
 -- added to all (Un)Main-able configurations in Setup
-function GetConfigWithDefaultProgram(filetype)
-  local config = GetConfig(filetype)
+local function get_config_with_default_program(filetype)
+  local config = get_config(filetype)
   if config == nil then return nil end
 
   if config._default_program == nil then
@@ -36,9 +36,9 @@ end
 -- Edit the `program` field of the appropriate dap configuration
 -- If the default value of this field was appropriately set to a function, then run the function and modify the field
 -- to hold a string, the return value.
-function Main()
+local function main()
   local filetype = vim.bo.filetype
-  local config = GetConfigWithDefaultProgram(filetype)
+  local config = get_config_with_default_program(filetype)
   if config == nil then return end
 
   config.program = config._default_program()
@@ -49,7 +49,7 @@ end
 -- If the default value of this field was appropriately set to a function, then set the field back to its default value
 function Unmain()
   local filetype = vim.bo.filetype
-  local config = GetConfigWithDefaultProgram(filetype)
+  local config = get_config_with_default_program(filetype)
   if config == nil then return end
 
   config.program = config._default_program
@@ -58,9 +58,9 @@ function Unmain()
 end
 
 -- Undo the function Main
-function Unmain()
+local function unmain()
   local filetype = vim.bo.filetype
-  local config = GetConfig(filetype)
+  local config = get_config(filetype)
   if config == nil then return end
 
   if config._default_program == nil then
@@ -83,9 +83,9 @@ end
 -- Argv <index> .......... sets args[index] to an empty string
 -- Argv <index> <value> .. sets args[index] to value. value can start with whitespace, just put the whitespace after the
 --                           separating space between <index> and <value>
-function Argv(my)
+local function argv(my)
   local filetype = vim.bo.filetype
-  local config = GetConfig(filetype)
+  local config = get_config(filetype)
   if config == nil then return end
 
   -- If there is no args table, make an empty one before doing anything!
@@ -135,7 +135,7 @@ function Argv(my)
   print_args()
 end
 
-function Setup()
+local function setup()
   -- Sneakily store the default value for `program` in each primary configuration as `_default_program`
   -- By primary configuration, I mean the first configuration in the table associated with any filetype.
   for _, config_table in require'dap'.configurations do
@@ -146,7 +146,7 @@ function Setup()
   end
 
   -- Set user commands
-  vim.api.nvim_create_user_command('Main', Main, {})
-  vim.api.nvim_create_user_command('Unmain', Unmain, {})
-  vim.api.nvim_create_user_command('Argv', Argv, { nargs = '*' })
+  vim.api.nvim_create_user_command('Main', main, {})
+  vim.api.nvim_create_user_command('Unmain', unmain, {})
+  vim.api.nvim_create_user_command('Argv', argv, { nargs = '*' })
 end
