@@ -10,9 +10,8 @@ TODO: Make proper documentation instead of putting all this in README.md
 
 List or modify the arguments that will be passed to your program when debugging. When successful, prints out the table of arguments. The Vim command can look like any of the following:
 
-| command       | description    |
-|:-------------:|:--------------:|
-| Argv                    | only prints the args     |
+| Argv       | only prints the args    |
+|:------------- |:-------------- |
 | Argv pop                | removes the last item in args     |
 | Argv clear              | sets args to an empty table    |
 | Argv <index>            | sets args[index] to an empty string     |
