@@ -138,7 +138,7 @@ end
 local function setup()
   -- Sneakily store the default value for `program` in each primary configuration as `_default_program`
   -- By primary configuration, I mean the first configuration in the table associated with any filetype.
-  for _, config_table in require'dap'.configurations do
+  for _, config_table in pairs(require'dap'.configurations) do
     local config = config_table[1]
     if config and type(config.program) == 'function' then
       config._default_program = config.program
