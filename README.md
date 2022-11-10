@@ -10,12 +10,12 @@ TODO: Make proper documentation instead of putting all this in README.md
 
 List or modify the arguments that will be passed to your program when debugging. When successful, prints out the table of arguments. The Vim command can look like any of the following:
 
-<| command  | description   |
+<| command       | description    |
 |-------------- | -------------- |
-| Argv    | only prints the args     |
-| Argv pop   | removes the last item in args     |
-| Argv clear    | sets args to an empty table    |
-| Argv <index>    | sets args[index] to an empty string     |
+| Argv                    | only prints the args     |
+| Argv pop                | removes the last item in args     |
+| Argv clear              | sets args to an empty table    |
+| Argv <index>            | sets args[index] to an empty string     |
 | Argv <index> <value>    | sets args[index] to value. Value can start with whitespace, just put the whitespace after the separating space between <index> and <value>.     |
 
 For those last two uses, the index supplied cannot be greater than any index that was not yet supplied.
