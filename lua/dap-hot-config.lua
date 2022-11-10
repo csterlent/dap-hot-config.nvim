@@ -150,3 +150,7 @@ local function setup()
   vim.api.nvim_create_user_command('Unmain', unmain, {})
   vim.api.nvim_create_user_command('Argv', argv, { nargs = '*' })
 end
+
+return {
+  setup = setup
+}
