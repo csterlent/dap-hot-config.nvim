@@ -1,6 +1,6 @@
 # dap-hot-config.nvim
 
-Adds commands to NeoVim that let you configure (nvim-dap)[https://github.com/mfussenegger/nvim-dap] without adding launch.json files to your project or editing your global DAP configurations.
+Adds commands to NeoVim that let you configure [nvim-dap](https://github.com/mfussenegger/nvim-dap) without adding launch.json files to your project or editing your global DAP configurations.
 
 TODO: Make proper documentation instead of putting all this in README.md
 
@@ -14,8 +14,8 @@ List or modify the arguments that will be passed to your program when debugging.
 |:------------- |:-------------- |
 | Argv pop                | removes the last item in args     |
 | Argv clear              | sets args to an empty table    |
-| Argv <index>            | sets args[index] to an empty string     |
-| Argv <index> <value>    | sets args[index] to value. Value can start with whitespace, just put the whitespace after the separating space between <index> and <value>.     |
+| Argv \<index\>            | sets args[index] to an empty string     |
+| Argv \<index\> \<value\>    | sets args[index] to value. Value can start with whitespace, just put the whitespace after the separating space between \<index\> and \<value\>.     |
 
 For those last two uses, the index supplied cannot be greater than any index that was not yet supplied.
 
