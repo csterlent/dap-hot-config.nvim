@@ -54,18 +54,11 @@ end
 -- Undo the function Main
 local function unmain()
   local filetype = vim.bo.filetype
-  local config = get_config(filetype)
+  local config = get_config_with_default_program(filetype)
   if config == nil then return end
 
-  if config._default_program == nil then
-    print("require'dap'.configurations." .. filetype .. "[1].program is not a function")
-    print("Example function that returns the path to the file being currently edited:")
-    print("function()\n  return vim.fn.expand('%p:)\nend")
-    return
-  end
-
   config.program = config._default_program
-  print("require'dap'.configurations'." .. filetype .. "[1].program = " .. config.program)
+  print("require'dap'.configurations'." .. filetype .. "[1].program reset")
 end
 
 -- Takes in an argument table from the nvim_create_user_command API. Accordingly adjusts the args table of the DAP
