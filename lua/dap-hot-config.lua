@@ -23,6 +23,12 @@ local function get_config_with_default_program(filetype)
   local config = get_config(filetype)
   if config == nil then return nil end
 
+  -- Sneakily store the default value for `program` in the primary configuration as `_default_program`
+  -- By primary configuration, I mean the first configuration in the table associated with any filetype.
+  if config._default_program == nil and type(config.program) == 'function' then
+    config._default_program = config.program
+  end
+
   if config._default_program == nil then
     print("require'dap'.configurations." .. filetype .. "[1].program is not set to a function by default")
     print("Example function that returns the path to the file being currently edited:")
@@ -43,18 +49,6 @@ local function main()
 
   config.program = config._default_program()
   print("require'dap'.configurations'." .. filetype .. "[1].program = " .. config.program)
-end
-
--- Edit the `program` field of the appropriate dap configuration
--- If the default value of this field was appropriately set to a function, then set the field back to its default value
-function Unmain()
-  local filetype = vim.bo.filetype
-  local config = get_config_with_default_program(filetype)
-  if config == nil then return end
-
-  config.program = config._default_program
-  print("require'dap'.configurations'." .. filetype .. "[1].program reset")
-  return true
 end
 
 -- Undo the function Main
@@ -135,22 +129,7 @@ local function argv(my)
   print_args()
 end
 
-local function setup()
-  -- Sneakily store the default value for `program` in each primary configuration as `_default_program`
-  -- By primary configuration, I mean the first configuration in the table associated with any filetype.
-  for _, config_table in pairs(require'dap'.configurations) do
-    local config = config_table[1]
-    if config and type(config.program) == 'function' then
-      config._default_program = config.program
-    end
-  end
-
-  -- Set user commands
-  vim.api.nvim_create_user_command('Main', main, {})
-  vim.api.nvim_create_user_command('Unmain', unmain, {})
-  vim.api.nvim_create_user_command('Argv', argv, { nargs = '*' })
-end
-
-return {
-  setup = setup
-}
+-- Set user commands
+vim.api.nvim_create_user_command('Main', main, {})
+vim.api.nvim_create_user_command('Unmain', unmain, {})
+vim.api.nvim_create_user_command('Argv', argv, { nargs = '*' })
