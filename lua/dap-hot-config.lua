@@ -4,7 +4,7 @@
 -- TODO: maybe this plugin could modify all configurations associated with the filetype, instead of just the first one.
 local function get_config(filetype)
   -- Get the appropriate table of DAP configurations using the filetype of the current buffer, and make sure it's valid
-  local config_table = require'dap'.configurations[filetype]
+  local config_table = require 'dap'.configurations[filetype]
   if config_table == nil then
     print(filetype .. " not found in require'dap'.configurations")
     return nil
@@ -30,9 +30,12 @@ local function get_config_with_default_program(filetype)
   end
 
   if config._default_program == nil then
-    print("require'dap'.configurations." .. filetype .. "[1].program is not set to a function by default")
+    print("Could not complete action: DAP configuration is not set up to use Main")
+    print("The 'program' field of the first debugee configuration for this filetype:")
+    print("require('dap').configurations." .. filetype .. "[1].program")
+    print("...must be set to a function by default.")
     print("Example function that returns the path to the file being currently edited:")
-    print("function()\n  return vim.fn.expand('%p:)\nend")
+    print("function()\n  return vim.fn.expand('%p:')\nend")
     return nil
   end
 
