@@ -1,3 +1,7 @@
+local my_opts = {
+  verbose_mode = true,
+  always_show_args = true
+}
 -- For internal use, get the configuration that should be edited based on that filetype. If DAP has multiple
 -- configurations associated with that filetype, just get the first one.
 -- If the configuration is missing, print a message and return nil.
@@ -51,7 +55,9 @@ local function main()
   if config == nil then return end
 
   config.program = config._default_program()
-  print("require'dap'.configurations'." .. filetype .. "[1].program = " .. config.program)
+  if my_opts.verbose_mode then
+    print("require'dap'.configurations'." .. filetype .. "[1].program = " .. config.program)
+  end
 end
 
 -- Undo the function Main
@@ -61,7 +67,9 @@ local function unmain()
   if config == nil then return end
 
   config.program = config._default_program
-  print("require'dap'.configurations'." .. filetype .. "[1].program reset")
+  if my_opts.verbose_mode then
+    print("require'dap'.configurations'." .. filetype .. "[1].program reset")
+  end
 end
 
 -- Takes in an argument table from the nvim_create_user_command API. Accordingly adjusts the args table of the DAP
@@ -84,7 +92,9 @@ local function argv(my)
 
   -- Helper function to print the current args table
   local function print_args()
-    print("require'dap'.configurations." .. filetype .. "[1].args")
+    if my_opts.verbose_mode then
+      print("require'dap'.configurations." .. filetype .. "[1].args")
+    end
     for k, v in ipairs(config.args) do
       print(tostring(k) .. "=" .. v) -- Prints "k=v"
     end
@@ -99,15 +109,16 @@ local function argv(my)
   -- Check if the user wants the 'pop' or 'clear' or 'push' subcommands
   if my.args == 'pop' then
     config.args[#config.args] = nil -- Remove the last item in the args table
-    print_args()
+    if my_opts.always_show_args then print_args() end
     return
   elseif my.args == 'clear' then
     config.args = {} -- Remove every item in the args table
-    print_args()
+    if my_opts.always_show_args then print_args() end
     return
   elseif my.fargs[1] == 'push' then
     local value = my.args:sub(6)          -- Get the arg to be added: everything after 'push<Space>'
     config.args[#config.args + 1] = value -- Add value to the end
+    if my_opts.always_show_args then print_args() end
     return
   end
 
@@ -125,12 +136,14 @@ local function argv(my)
   -- Get the value that the user wants to put at that index, which is an empty string if nothing is given
   local value = my.args:sub(string.len(my.fargs[1]) + 2)
 
-  -- Apply the configuration and print out the args
+  -- Apply the configuration and print out the args depending on my configuration
   config.args[index] = value
-  print_args()
+  if my_opts.always_show_args then print_args() end
 end
 
 -- Set user commands
 vim.api.nvim_create_user_command('Main', main, {})
 vim.api.nvim_create_user_command('Unmain', unmain, {})
 vim.api.nvim_create_user_command('Argv', argv, { nargs = '*' })
+
+return my_opts
