@@ -31,10 +31,10 @@ local function get_config_with_default_program(filetype)
 
   if config._default_program == nil then
     print("Could not complete action: DAP configuration is not set up to use Main")
-    print("The 'program' field of the first debugee configuration for this filetype:")
-    print("require('dap').configurations." .. filetype .. "[1].program")
+    print("The 'program' field of the first debugee configuration for this filetype:\n")
+    print("require('dap').configurations." .. filetype .. "[1].program\n")
     print("...must be set to a function by default.")
-    print("Example function that returns the path to the file being currently edited:")
+    print("Example function that returns the path to the file being currently edited:\n")
     print("function()\n  return vim.fn.expand('%p:')\nend")
     return nil
   end
@@ -70,6 +70,7 @@ end
 -- Argv .................. only prints the args
 -- Argv pop .............. removes the last item in args
 -- Argv clear ............ sets args to an empty table
+-- Argv push <value> ..... inserts value onto the end of args. value can start with whitespace, see 2 lines below
 -- Argv <index> .......... sets args[index] to an empty string
 -- Argv <index> <value> .. sets args[index] to value. value can start with whitespace, just put the whitespace after the
 --                           separating space between <index> and <value>
@@ -95,7 +96,7 @@ local function argv(my)
     return
   end
 
-  -- Check if the user wants the 'pop' or 'clear' subcommands
+  -- Check if the user wants the 'pop' or 'clear' or 'push' subcommands
   if my.args == 'pop' then
     config.args[#config.args] = nil -- Remove the last item in the args table
     print_args()
@@ -104,13 +105,17 @@ local function argv(my)
     config.args = {} -- Remove every item in the args table
     print_args()
     return
+  elseif my.fargs[1] == 'push' then
+    local value = my.args:sub(6)          -- Get the arg to be added: everything after 'push<Space>'
+    config.args[#config.args + 1] = value -- Add value to the end
+    return
   end
 
   -- No subcommand given, so the user must want to modify the args table at a specific index
   -- Get the index of the argument that the user wants to modify, and make sure it is valid
   local index = tonumber(my.fargs[1])
   if index == nil or index % 1 ~= 0 then
-    print(my.fargs[1] .. " is not a valid index or 'pop' or 'clear'")
+    print(my.fargs[1] .. " is not a valid index or 'pop' or 'clear' or 'push'")
     return
   elseif index <= 0 or index > #config.args + 1 then
     print(tostring(index) .. " is out of bounds for the current args table")
